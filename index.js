@@ -9,9 +9,9 @@ const myServer = http.createServer((req, res) => {
   const localTime = new Date(requestTime.getTime() + 6 * 60 * 60 * 1000);
   const gmt6String = localTime.toISOString().replace("T", " ").split(".")[0];
   // local time end
-  const log = `request Time: { ${gmt6String} } and thing: {${req.url}}: new request in server\n`;
+  const log = `request Time: { ${gmt6String} } with the {${req.method}} and thing is: {${req.url}}: new request in server\n`;
   const Myurl = url.parse(req.url, true);
-  console.log(Myurl);
+  // console.log(Myurl);
   fs.appendFile("log.txt", log, (err, data) => {
     switch (Myurl.pathname) {
       case "/":
@@ -24,6 +24,13 @@ const myServer = http.createServer((req, res) => {
       case "/about":
         const userName = Myurl.query.Name;
         res.end(`Hi, I am ${userName}`);
+        break;
+      case "/signup":
+        if (req.method === "GET") return res.end("This is a sign up form");
+        else if (req.method === "POST") {
+          // DB query
+          res.end("Form success");
+        }
         break;
       default:
         res.end("404 not found");
