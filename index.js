@@ -1,8 +1,10 @@
 const http = require("http");
 const fs = require("fs");
 const url = require("url");
+const express = require("express");
+const App = express();
 
-const myServer = http.createServer((req, res) => {
+function myHandler(req, res) {
   if (req.url && req.url.includes("favicon")) return res.end();
   // For local Time
   const requestTime = new Date();
@@ -11,6 +13,7 @@ const myServer = http.createServer((req, res) => {
   // local time end
   const log = `request Time: { ${gmt6String} } with the {${req.method}} and thing is: {${req.url}}: new request in server\n`;
   const Myurl = url.parse(req.url, true);
+  console.log(Myurl);
   // console.log(Myurl);
   fs.appendFile("log.txt", log, (err, data) => {
     switch (Myurl.pathname) {
@@ -36,6 +39,7 @@ const myServer = http.createServer((req, res) => {
         res.end("404 not found");
     }
   });
-});
+}
+const myServer = http.createServer(myHandler);
 
 myServer.listen(8000, () => console.log("server started"));
